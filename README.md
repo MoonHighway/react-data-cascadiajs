@@ -38,6 +38,10 @@ react-data-cascadiajs /
 * Tanstack Query
 * Advanced Patterns
 
+## REST API
+
+https://snowtooth-api-rest.fly.dev/
+
 ## Learning Objectives
 
 By the end of this course, students will be able to:
