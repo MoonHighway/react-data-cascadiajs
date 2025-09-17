@@ -4,23 +4,23 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 
 export function CreateTaskForm() {
-  const [title, setTitle] = useState('')
+  const [runName, setRunName] = useState('')
   const [description, setDescription] = useState('')
-  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium')
+  const [difficulty, setDifficulty] = useState<'green' | 'blue' | 'black' | 'double-black'>('blue')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
+
     // Simulate API call
-    console.log('Creating task:', { title, description, priority })
+    console.log('Creating ski run:', { runName, description, difficulty })
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     // Reset form
-    setTitle('')
+    setRunName('')
     setDescription('')
-    setPriority('medium')
+    setDifficulty('blue')
     setIsSubmitting(false)
   }
 
@@ -28,16 +28,16 @@ export function CreateTaskForm() {
     <form onSubmit={handleSubmit} className="card">
       <div className="space-y-4">
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-            Task Title
+          <label htmlFor="runName" className="block text-sm font-medium text-gray-700 mb-1">
+            🎿 Ski Run Name
           </label>
           <input
             type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            id="runName"
+            value={runName}
+            onChange={(e) => setRunName(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Enter task title..."
+            placeholder="e.g., Blue Bird Bowl, Powder Paradise..."
             required
             disabled={isSubmitting}
           />
@@ -45,7 +45,7 @@ export function CreateTaskForm() {
 
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-            Description (Optional)
+            📝 Notes (Optional)
           </label>
           <textarea
             id="description"
@@ -53,25 +53,26 @@ export function CreateTaskForm() {
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Add more details..."
+            placeholder="How was the run? Conditions, snow quality, etc..."
             disabled={isSubmitting}
           />
         </div>
 
         <div>
-          <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-1">
-            Priority
+          <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-1">
+            ⛷️ Difficulty Level
           </label>
           <select
-            id="priority"
-            value={priority}
-            onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+            id="difficulty"
+            value={difficulty}
+            onChange={(e) => setDifficulty(e.target.value as 'green' | 'blue' | 'black' | 'double-black')}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             disabled={isSubmitting}
           >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
+            <option value="green">🟢 Green Circle (Beginner)</option>
+            <option value="blue">🔵 Blue Square (Intermediate)</option>
+            <option value="black">⚫ Black Diamond (Advanced)</option>
+            <option value="double-black">⚫⚫ Double Black Diamond (Expert)</option>
           </select>
         </div>
 
@@ -81,7 +82,7 @@ export function CreateTaskForm() {
           className="btn-primary w-full flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Plus className="w-4 h-4" />
-          <span>{isSubmitting ? 'Adding...' : 'Add Task'}</span>
+          <span>{isSubmitting ? 'Logging Run...' : 'Log Ski Run 🎿'}</span>
         </button>
       </div>
     </form>

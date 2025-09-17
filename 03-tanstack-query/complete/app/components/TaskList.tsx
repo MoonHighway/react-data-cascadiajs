@@ -1,11 +1,9 @@
-'use client'
-
-import { useQuery } from '@tanstack/react-query'
 import { Task } from '../types/task'
 import { TaskItem } from './TaskItem'
 
-// API function
-async function fetchTasks(): Promise<Task[]> {
+// Server Component - runs on the server!
+async function getTasks(): Promise<Task[]> {
+  // Simulate API delay - but this happens on the server
   await new Promise(resolve => setTimeout(resolve, 1000))
   
   return [
@@ -39,47 +37,10 @@ async function fetchTasks(): Promise<Task[]> {
   ]
 }
 
-export function TaskList() {
-  const { 
-    data: tasks, 
-    isLoading, 
-    error,
-    refetch 
-  } = useQuery({
-    queryKey: ['tasks'],
-    queryFn: fetchTasks,
-  })
+export async function TaskList() {
+  const tasks = await getTasks()
 
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="card animate-pulse">
-            <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        ))}
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="card border-red-200 bg-red-50">
-        <p className="text-red-600 mb-4">
-          Error loading tasks: {error instanceof Error ? error.message : 'Unknown error'}
-        </p>
-        <button 
-          onClick={() => refetch()} 
-          className="btn-secondary text-sm"
-        >
-          Try Again
-        </button>
-      </div>
-    )
-  }
-
-  if (!tasks || tasks.length === 0) {
+  if (tasks.length === 0) {
     return (
       <div className="card text-center py-8">
         <p className="text-gray-500">No tasks yet. Create your first task!</p>

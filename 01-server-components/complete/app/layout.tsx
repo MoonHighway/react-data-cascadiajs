@@ -2,8 +2,8 @@ import './globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'TaskFlow Pro - Modern React Course',
-  description: 'Building modern React applications with Server Components and TanStack Query',
+  title: 'Ski App - Modern React Course',
+  description: 'Building modern React applications with Server Components - Track your ski adventures!',
 }
 
 export default function RootLayout({

@@ -2,8 +2,8 @@ import './globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'TaskFlow Pro - Modern React Course',
-  description: 'Building modern React applications with Server Components and TanStack Query',
+  title: 'Snowtooth Resort - TanStack Query Workshop',
+  description: 'Learn TanStack Query with real ski resort data',
 }
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-gray-50 text-gray-900">
         <main className="min-h-screen">
           {children}
         </main>

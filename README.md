@@ -11,7 +11,6 @@ This course is organized as a progressive build where students start with basic 
 
 ```
 react-data-cascadiajs /
-├── 00-starter/                    # Initial project (basic Next.js setup)
 ├── 01-server-components/
 │   ├── start/                     # Client Components (useEffect + useState)
 │   ├── checkpoint/                # Post-demo: Basic Client Components
@@ -33,52 +32,11 @@ react-data-cascadiajs /
 
 ## Course Outline
 
-### Morning Session (3 hours)
-
-#### 9:00-10:30 - Server Components Fundamentals
-- **Start**: `01-server-components/start` (Client Components with useEffect)
-- **Build Together**: Convert TaskList to Server Component → **Checkpoint**
-- **Lab Activity**: Students add UserPreferences + Suspense (30min)
-- **Complete**: `01-server-components/complete` (Full Server Components implementation)
-
-#### 10:45-12:00 - Advanced React Patterns  
-- **Start**: `02-react-patterns/start` (Basic components)
-- **Build Together**: Add React.memo, error boundaries
-- **Lab Activity**: Optimize performance patterns (30min)
-- **Complete**: `02-react-patterns/complete`
-
-### Afternoon Session (3 hours)
-
-#### 1:00-2:30 - Server State Management
-- **Start**: `03-tanstack-query/start` (Server Components only)
-- **Build Together**: Setup TanStack Query, mutations
-- **Lab Activity**: Add real-time features (30min)
-- **Complete**: `03-tanstack-query/complete` (Full Query integration)
-
-#### 2:45-4:00 - Advanced Data Patterns
-- **Start**: `04-advanced-patterns/start` (Basic Query setup)
-- **Build Together**: Infinite scrolling, advanced caching
-- **Lab Activity**: Performance optimization (30min) 
-- **Complete**: `04-advanced-patterns/complete` (Production-ready)
-
-## 🚀 Quick Start
-
-### For Instructors:
-```bash
-cd 00-starter
-npm install
-npm run dev
-
-cd 01-server-components/start && npm install && npm run dev  # :3001
-cd 01-server-components/complete && npm install && npm run dev  # :3002
-```
-
-### For Students:
-Students should start with `00-starter` and progressively work through each section following this flow:
-1. Begin with `/start/` folder for each section
-2. After instructor demo, reference `/checkpoint/` for the demonstrated code
-3. Complete lab activities starting from the `/checkpoint/` state
-4. Use `/complete/` folder as final reference if stuck
+* Server Components
+* Working with Data
+* React Patterns
+* Tanstack Query
+* Advanced Patterns
 
 ## Learning Objectives
 
@@ -90,12 +48,53 @@ By the end of this course, students will be able to:
 - Build real-time, responsive user interfaces
 - Deploy production-ready React applications
 
-## 📖 Additional Resources
+## React Data & TanStack Query – Useful Links
 
-- **`CURRICULUM.md`** - Detailed session breakdown and timing
-- **`INSTRUCTOR_GUIDE.md`** - Teaching notes and troubleshooting
-- **`/labs`** - Hands-on lab activities for each section
+### Official Documentation
+- [React Docs (beta)](https://react.dev/) – The modern React documentation site.
+- [TanStack Query Docs](https://tanstack.com/query/latest) – Official docs for React Query / TanStack Query.
+- [TanStack GitHub Repo](https://github.com/TanStack/query) – Source code, issues, and discussions.
+- [Next.js Docs](https://nextjs.org/docs) – Official docs for Next.js (framework by Vercel).
 
----
+### Tutorials & Guides
+- [Getting Started with TanStack Query](https://tanstack.com/query/latest/docs/react/overview) – Introductory guide from the official docs.
+- [React Query: Data Fetching Made Simple](https://tkdodo.eu/blog/react-query-data-fetching) – Great blog series by TkDodo.
+- [React Query Tutorial (freeCodeCamp)](https://www.freecodecamp.org/news/react-query-tutorial/) – Beginner-friendly walkthrough.
+- [TanStack Query v5 Upgrade Guide](https://tanstack.com/query/v5/docs/react/guides/migrating-to-v5) – Important for understanding changes if migrating.
+- [Data Fetching in Next.js](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching) – Overview of data fetching strategies in Next.js.
 
-*This progressive structure ensures students build confidence while creating a real application they can showcase in their portfolio.*
+### API & Data Handling
+- [REST API with Fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) – MDN guide for working with Fetch.
+- [Axios GitHub](https://github.com/axios/axios) – Popular HTTP client for API requests.
+- [JSONPlaceholder](https://jsonplaceholder.typicode.com/) – Free fake REST API for testing.
+- [PokéAPI](https://pokeapi.co/) – Fun dataset for practice with queries.
+- [Vercel Postgres](https://vercel.com/docs/storage/vercel-postgres) – Vercel’s hosted Postgres database.
+- [Vercel KV](https://vercel.com/docs/storage/vercel-kv) – Managed Redis-compatible key-value store.
+
+### Patterns & Best Practices
+- [React Query Best Practices (TkDodo)](https://tkdodo.eu/blog/practical-react-query) – Covers caching, invalidation, and more.
+- [React Query Performance Optimizations](https://tanstack.com/query/latest/docs/react/guides/important-defaults) – Official guide on defaults and performance.
+- [State Management with React Query](https://blog.logrocket.com/react-query-data-fetching-state-management/) – Explains how React Query overlaps/replaces traditional state management.
+- [Next.js Caching & Revalidation](https://nextjs.org/docs/app/building-your-application/caching) – How caching integrates with data fetching on Vercel.
+
+### Advanced Topics
+- [Infinite Queries](https://tanstack.com/query/latest/docs/react/guides/infinite-queries) – Loading paginated or infinite data.
+- [Mutations](https://tanstack.com/query/latest/docs/react/guides/mutations) – For POST, PUT, DELETE requests.
+- [Optimistic Updates](https://tanstack.com/query/latest/docs/react/guides/optimistic-updates) – Handle UI updates before the server responds.
+- [Suspense Mode](https://tanstack.com/query/latest/docs/react/guides/suspense) – Experimental React Suspense integration.
+- [Next.js Server Actions](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions) – Write mutations as server-side functions.
+
+### Vercel-Specific Resources
+- [Vercel Docs](https://vercel.com/docs) – Main documentation hub.
+- [Vercel Deployment Guide](https://vercel.com/docs/deployments/overview) – How to deploy apps to Vercel.
+- [Next.js App Router](https://nextjs.org/docs/app) – Official docs for the modern App Router.
+- [Streaming & Suspense in Next.js](https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming) – Key for real-time data UX.
+- [Vercel AI SDK](https://sdk.vercel.ai/docs) – AI integration kit, often used alongside data fetching.
+- [Vercel Examples GitHub](https://github.com/vercel/examples) – Code samples, many with Next.js + data fetching patterns.
+- [Next.js & TanStack Query Example](https://github.com/vercel/examples/tree/main/edge-middleware/react-query) – Sample showing them together.
+
+### Community & Extras
+- [TanStack Discord](https://tlinz.dev/discord) – Active community for help and discussions.
+- [TanStack YouTube Channel](https://www.youtube.com/c/TanStack) – Video tutorials, talks, and updates.
+- [Awesome TanStack Query](https://github.com/tanstack/awesome-query) – Curated community resources.
+- [Vercel YouTube Channel](https://www.youtube.com/c/VercelHQ) – Talks, tutorials, and product launches.

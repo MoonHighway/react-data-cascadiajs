@@ -1,225 +1,294 @@
-# Lab 3: TanStack Query Real-time Features
-**Time: 30 minutes**  
+# Lab 3: TanStack Query with Real-time Ski Resort Data
+**Time: 45 minutes**
 **Working Directory: `03-tanstack-query/start/`**
 
 ## Getting Started
 ```bash
 cd 03-tanstack-query/start
 npm install
-npm run dev  # Runs on http://localhost:3005
+npm run dev  # Runs on http://localhost:3007
 ```
 
 ## Objective
-Transform TaskFlow Pro into a real-time, responsive application using TanStack Query's advanced features.
-
-## Setup Required
-Make sure TanStack Query is configured in your app:
-
-```tsx
-// app/providers/QueryProvider.tsx (should exist after our session)
-import { QueryClient, QueryProvider } from '@tanstack/react-query'
-```
+Transform the static Snowtooth Resort app into a real-time, data-driven application using TanStack Query to fetch live ski lift status from the Snowtooth API.
 
 ## Your Challenge
 
-### Part 1: Task Mutations (15min)
+### Part 1: Setup TanStack Query (15 minutes)
 
-1. **Implement Task Toggle** (8min)
+1. **Install and Configure TanStack Query** (8 minutes)
+   ```bash
+   npm install @tanstack/react-query @tanstack/react-query-devtools
+   ```
+
+   Create the providers:
    ```tsx
-   // app/hooks/useTasks.ts
-   export function useToggleTask() {
-     return useMutation({
-       mutationFn: async ({ taskId, completed }: ToggleTaskData) => {
-         // Simulate API call
-         await new Promise(resolve => setTimeout(resolve, 500))
-         if (Math.random() < 0.1) throw new Error('Network error')
-         
-         return { taskId, completed }
+   // app/providers.tsx
+   'use client'
+
+   import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+   import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+   import { useState } from 'react'
+
+   export function Providers({ children }: { children: React.ReactNode }) {
+     const [queryClient] = useState(() => new QueryClient({
+       defaultOptions: {
+         queries: {
+           staleTime: 1000 * 60 * 5, // 5 minutes
+           refetchOnWindowFocus: false,
+         },
        },
-       // Add optimistic updates here
-       // Add error handling here
-       // Add success handling here
-     })
+     }))
+
+     return (
+       <QueryClientProvider client={queryClient}>
+         {children}
+         <ReactQueryDevtools initialIsOpen={false} />
+       </QueryClientProvider>
+     )
    }
    ```
 
-   **Requirements:**
-   - Optimistic UI updates (instant feedback)
-   - Error rollback if API fails
-   - Toast notifications for success/error
-   - Loading states during mutation
-
-2. **Add Task Creation** (7min)
-   - Convert CreateTaskForm to use mutations
-   - Add form validation
-   - Clear form on success
-   - Handle creation errors gracefully
-
-### Part 2: Real-time Simulation (10min)
-
-1. **Implement Background Sync** (5min)
+2. **Update Layout to Use Providers** (7 minutes)
    ```tsx
-   // Simulate real-time updates from other users
-   export function useRealtimeSync() {
-     const queryClient = useQueryClient()
-     
-     useEffect(() => {
-       const interval = setInterval(() => {
-         // Simulate receiving updates from other users
-         // Randomly toggle a task or add a new one
-         // Update the cache accordingly
-       }, 10000) // Every 10 seconds
-       
-       return () => clearInterval(interval)
-     }, [])
+   // app/layout.tsx
+   import { Providers } from './providers'
+
+   export default function RootLayout({
+     children,
+   }: {
+     children: React.ReactNode
+   }) {
+     return (
+       <html lang="en">
+         <body className="bg-gray-50 text-gray-900">
+           <Providers>
+             <main className="min-h-screen">
+               {children}
+             </main>
+           </Providers>
+         </body>
+       </html>
+     )
    }
-   ```
 
-2. **Add Collaborative Features** (5min)
-   - Show "Last updated by" information
-   - Add typing indicators simulation
-   - Display recent activity feed
+### Part 2: Fetch Real Ski Lift Data (15 minutes)
 
-### Part 3: Advanced Query Features (5min)
-
-1. **Implement Query Filtering**
+1. **Create Lift Type Definitions** (5 minutes)
    ```tsx
-   export function useFilteredTasks(filter: TaskFilter) {
-     return useQuery({
-       queryKey: ['tasks', 'filtered', filter],
-       queryFn: () => fetchFilteredTasks(filter),
-       // Add proper configuration
-     })
+   // app/types/lift.ts
+   export type LiftStatus = 'OPEN' | 'CLOSED' | 'HOLD'
+   export type TrailDifficulty = 'beginner' | 'intermediate' | 'advanced' | 'expert'
+
+   export interface Trail {
+     id: string
+     name: string
+     status: 'OPEN' | 'CLOSED'
+     difficulty: TrailDifficulty
+     groomed: boolean
+     trees: boolean
+     night: boolean
+   }
+
+   export interface Lift {
+     id: string
+     name: string
+     status: LiftStatus
+     capacity: number
+     night: boolean
+     elevationGain: number
+     trailAccess: Trail[]
    }
    ```
 
-2. **Add Dependent Queries**
-   - Load user preferences first
-   - Then load tasks based on preferences
-   - Handle loading dependencies properly
+2. **Create API Route to Avoid CORS** (5 minutes)
+   ```tsx
+   // app/api/lifts/route.ts
+   import { NextResponse } from 'next/server'
+
+   export async function GET() {
+     try {
+       const response = await fetch('https://snowtooth-api-rest.fly.dev/')
+
+       if (!response.ok) {
+         throw new Error(`Failed to fetch: ${response.status}`)
+       }
+
+       const data = await response.json()
+       return NextResponse.json(data)
+     } catch (error) {
+       console.error('Error fetching lift data:', error)
+       return NextResponse.json(
+         { error: 'Failed to fetch lift data' },
+         { status: 500 }
+       )
+     }
+   }
+   ```
+
+3. **Implement Data Fetching with useQuery** (5 minutes)
+   ```tsx
+   // app/components/LiftStatus.tsx
+   'use client'
+
+   import { useQuery } from '@tanstack/react-query'
+   import { Lift } from '../types/lift'
+   import { Cable } from 'lucide-react'
+
+   const fetchLifts = async (): Promise<Lift[]> => {
+     const response = await fetch('/api/lifts')
+     if (!response.ok) {
+       throw new Error('Failed to fetch lift data')
+     }
+     return response.json()
+   }
+
+   export function LiftStatus() {
+     const { data: lifts, isLoading, error, isError } = useQuery({
+       queryKey: ['lifts'],
+       queryFn: fetchLifts,
+     })
+
+     if (isLoading) {
+       return <div>Loading ski lift data...</div>
+     }
+
+     if (isError) {
+       return <div>Error: {error?.message}</div>
+     }
+
+     // Your UI code here...
+   }
+   ```
+
+### Part 3: Advanced Features (15 minutes)
+
+1. **Add Loading States and Error Handling** (8 minutes)
+   ```tsx
+   // Add skeleton loading components
+   if (isLoading) {
+     return (
+       <div className="space-y-4">
+         {[1, 2, 3, 4].map((i) => (
+           <div key={i} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
+             <div className="flex items-center space-x-3 mb-4">
+               <div className="w-6 h-6 bg-gray-200 rounded"></div>
+               <div className="flex-1">
+                 <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                 <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+               </div>
+               <div className="w-16 h-6 bg-gray-200 rounded-full"></div>
+             </div>
+             <div className="grid grid-cols-2 gap-4">
+               <div className="h-4 bg-gray-200 rounded"></div>
+               <div className="h-4 bg-gray-200 rounded"></div>
+             </div>
+           </div>
+         ))}
+       </div>
+     )
+   }
+   ```
+
+2. **Add Auto-refresh** (7 minutes)
+   ```tsx
+   const { data: lifts, isLoading, error } = useQuery({
+     queryKey: ['lifts'],
+     queryFn: fetchLifts,
+     refetchInterval: 1000 * 60 * 2, // Refetch every 2 minutes
+   })
+   ```
 
 ## Expected Features
 
-### Real-time Behavior:
-- Tasks update automatically when others make changes
-- Optimistic UI for all user actions
-- Conflict resolution for simultaneous edits
-- Activity feed showing recent changes
+### Real-time Data Fetching:
+- Live ski lift status from Snowtooth API
+- Auto-refresh every 2 minutes
+- Smooth loading states with skeleton UI
+- Helpful error messages with retry options
 
-### Error Resilience:
-- Automatic retry on network failures
-- User notification for permanent failures
-- Offline support simulation
-- Queue actions when offline
-
-## Code Challenges
-
-### Challenge 1: Optimistic Updates
-```tsx
-// Make this work with proper optimism and rollback
-function useToggleTask() {
-  return useMutation({
-    mutationFn: toggleTaskAPI,
-    onMutate: async (variables) => {
-      // Cancel outgoing requests
-      // Snapshot current state
-      // Optimistically update cache
-    },
-    onError: (error, variables, context) => {
-      // Rollback using snapshot
-      // Show error message
-    },
-    onSuccess: (data, variables) => {
-      // Invalidate and refetch if needed
-    }
-  })
-}
-```
-
-### Challenge 2: Real-time Conflicts
-```tsx
-// Handle when two users edit the same task
-function handleTaskConflict(localTask: Task, remoteTask: Task) {
-  // Implement conflict resolution strategy:
-  // 1. Last-write-wins?
-  // 2. Merge changes?
-  // 3. Ask user to resolve?
-}
-```
-
-### Challenge 3: Background Sync
-```tsx
-// Keep data fresh even when user isn't actively using the app
-function useBackgroundSync() {
-  // Implement smart background fetching
-  // Only sync when data might be stale
-  // Respect user's network conditions
-}
-```
+### Query Management:
+- Efficient caching to reduce API calls
+- Background data refetching
+- DevTools for debugging queries
+- Proper TypeScript integration
 
 ## Success Criteria
-- [ ] Task completion toggles work instantly (optimistic)
-- [ ] Failed operations roll back gracefully
-- [ ] Real-time updates appear from "other users"
-- [ ] Loading states are smooth and informative
-- [ ] Error messages are helpful and actionable
-- [ ] No unnecessary network requests
-- [ ] Cache stays consistent across operations
+- [ ] App loads live ski lift data from the API
+- [ ] Loading states show skeleton components
+- [ ] Error states display helpful messages
+- [ ] Data auto-refreshes every 2 minutes
+- [ ] React Query DevTools are accessible
+- [ ] No TypeScript errors
+- [ ] UI matches the static version but with live data
 
 ## Testing Scenarios
 
-### Test Your Mutations:
-1. Toggle task while offline (simulate)
-2. Toggle task with slow network (3G simulation)
-3. Toggle task that another user just deleted
-4. Create task with duplicate name
-5. Rapid-fire multiple toggles
+### Test Your Implementation:
+1. **Normal Operation**: Verify lifts load from API
+2. **Network Issues**: Disconnect internet and check error handling
+3. **Slow Network**: Throttle network to see loading states
+4. **DevTools**: Open React Query DevTools to inspect queries
+5. **Auto-refresh**: Wait 2 minutes to see data refresh
 
-### Test Real-time Features:
-1. Open app in two browser tabs
-2. Make changes in one tab
-3. Verify other tab updates automatically
-4. Test with network interruptions
+### API Endpoint Information:
+- **External API**: `https://snowtooth-api-rest.fly.dev/` (accessed via Next.js API route)
+- **Your API Route**: `/api/lifts`
+- **Method**: GET
+- **Response**: Array of Lift objects
+- **No authentication required**
+- **Note**: We use an API route to avoid CORS issues when calling the external API from the browser
 
 ## Bonus Challenges
-- **Infinite Scrolling**: Load more tasks as user scrolls
-- **Search with Debouncing**: Real-time search with performance
-- **Offline Queue**: Store actions when offline, sync when online
-- **WebSocket Integration**: Replace polling with real WebSocket updates
-- **Optimistic Deletions**: Handle delete operations optimistically
+- **Manual Refresh**: Add a refresh button to refetch data
+- **Status Filtering**: Filter lifts by status (OPEN, CLOSED, HOLD)
+- **Night Skiing Filter**: Show only lifts with night skiing
+- **Trail Count Sorting**: Sort lifts by number of open trails
+- **Custom Stale Time**: Experiment with different staleTime values
 
 ## Solution Hints
 <details>
 <summary>Need guidance? Click for hints</summary>
 
-**Optimistic Updates Hint**: Use the `onMutate` callback to immediately update the cache, save a snapshot for rollback.
+**Setup Hint**: Remember to wrap your app with QueryClientProvider at the root level.
 
-**Real-time Hint**: Use `queryClient.invalidateQueries()` to trigger refetches, or `setQueryData()` for direct cache updates.
+**Loading States Hint**: Use the isLoading, isError, and error values returned from useQuery.
 
-**Error Handling Hint**: Always provide user feedback. Silent failures are the worst UX.
+**TypeScript Hint**: Define your Lift and Trail interfaces to match the API response structure.
 
-**Performance Hint**: Use `staleTime` and `gcTime` to reduce unnecessary requests.
+**Auto-refresh Hint**: Use the refetchInterval option in your useQuery configuration.
+
+**DevTools Hint**: Import ReactQueryDevtools and add it inside your QueryClientProvider.
 
 </details>
 
-## API Simulation Helpers
+## API Response Structure
 ```tsx
-// Use these to simulate realistic API behavior
-export const api = {
-  toggleTask: (taskId: string) => simulateAPI(() => ({ taskId, completed: !currentState })),
-  createTask: (task: NewTask) => simulateAPI(() => ({ ...task, id: generateId() })),
-  deleteTask: (taskId: string) => simulateAPI(() => ({ taskId }))
-}
-
-function simulateAPI<T>(fn: () => T, delay = 500): Promise<T> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (Math.random() < 0.9) resolve(fn())
-      else reject(new Error('Simulated network error'))
-    }, delay)
-  })
-}
+// The Snowtooth API returns an array like this:
+[
+  {
+    "id": "jolly-roger",
+    "name": "Jolly Roger",
+    "status": "OPEN",
+    "capacity": 6,
+    "night": true,
+    "elevationGain": 1350,
+    "trailAccess": [
+      {
+        "id": "blue-bird",
+        "name": "Blue Bird",
+        "status": "OPEN",
+        "difficulty": "intermediate",
+        "groomed": true,
+        "trees": false,
+        "night": true
+      }
+      // ... more trails
+    ]
+  }
+  // ... more lifts
+]
 ```
 
 ## Next Steps
-These real-time patterns will be extended in our final lab with advanced caching strategies!
+In the next lab, we'll add mutations and advanced query patterns for a complete data management solution!

@@ -1,9 +1,8 @@
-# Lab 1: Server Components Challenge
-**Time: 30 minutes**  
+# Lab 1: SkiTracker Pro - Server Components Challenge 🎿
 **Working Directory: `01-server-components/start/`**
 
 ## Objective
-Convert the user preferences sidebar to use Server Components and add proper error handling.
+Transform your ski run tracker from Client Components to modern React 19 Server Components, and add a skier profile with weather conditions using the new `use()` hook!
 
 ## Getting Started
 ```bash
@@ -12,104 +11,143 @@ npm install
 npm run dev  # Runs on http://localhost:3001
 ```
 
-## Current State
-The application has a basic task list using Client Components with useEffect/useState. We need to add user preferences that load from the server using Server Components.
+## Current State ❄️
+The SkiTracker Pro app currently uses Client Components with useEffect/useState to load ski runs. We'll modernize it with React 19 Server Components and add mountain weather using the new `use()` hook!
 
-## Your Challenge
+## Your Challenge 🏔️
 
-### Part 1: Create Server Component (15min)
-Create a new `UserPreferences` component that:
+### Part 1: Create Skier Profile Server Component (15min)
+Create a new `SkierProfile` component that loads from the server:
 
-1. **Fetch user preferences from server** (5min)
+1. **Fetch skier profile from server** (5min)
    ```tsx
-   // app/components/UserPreferences.tsx
-   async function getUserPreferences() {
-     // Simulate API delay
+   // app/components/SkierProfile.tsx
+   async function getSkierProfile() {
+     // Simulate mountain API delay
      await new Promise(resolve => setTimeout(resolve, 800))
-     
+
      return {
-       theme: 'light',
-       defaultPriority: 'medium',
-       showCompleted: true,
-       sortBy: 'createdAt'
+       name: 'Alpine Explorer',
+       skillLevel: 'Advanced',
+       preferredTerrain: 'Off-Piste Powder',
+       favoriteResort: 'Whistler Blackcomb',
+       totalVertical: 125000, // feet this season
+       runsCompleted: 47,
+       favoriteDifficulty: 'black'
      }
    }
    ```
 
-2. **Display preferences in sidebar** (5min)
-   - Theme toggle
-   - Default priority setting
-   - Task visibility options
-   - Sort preferences
+2. **Display profile in sidebar** (5min)
+   - Skier avatar and name
+   - Skill level badge (🟢 Beginner, 🔵 Intermediate, ⚫ Advanced, ⚫⚫ Expert)
+   - Season stats (total vertical, runs completed)
+   - Favorite terrain and resort
 
 3. **Add to main layout** (5min)
    - Update the grid layout in `app/page.tsx`
-   - Add proper spacing and styling
+   - Add proper mountain-themed styling
 
-### Part 2: Error Handling (10min)
-1. **Add error boundary** (5min)
+### Part 2: Weather Widget with React 19 use() Hook (10min)
+1. **Create WeatherWidget with use() hook** (5min)
    ```tsx
-   // app/components/ErrorBoundary.tsx
-   // Create a proper error boundary component
+   // app/components/WeatherWidget.tsx
+   'use client'
+   import { use } from 'react'
+
+   export function WeatherWidget({ weatherPromise }) {
+     const weather = use(weatherPromise) // React 19 feature!
+
+     return (
+       <div className="mountain-weather">
+         <h3>🏔️ Mountain Conditions</h3>
+         <div>Temperature: {weather.temp}°F</div>
+         <div>Fresh Snow: {weather.snowfall}"</div>
+         <div>Wind: {weather.windSpeed}mph</div>
+         <div>Visibility: {weather.visibility}</div>
+       </div>
+     )
+   }
    ```
 
-2. **Simulate error states** (5min)
-   - Add random error simulation (20% chance)
-   - Show user-friendly error messages
-   - Add retry functionality
+2. **Simulate mountain conditions** (5min)
+   - Add random weather simulation
+   - Show powder alerts when fresh snow > 6"
+   - Display avalanche warnings for extreme conditions
+   - Add resort status (open/closed lifts)
 
-### Part 3: Loading States (5min)
-1. **Create loading skeleton**
-   - Match the design of the preferences panel
-   - Add smooth transitions
+### Part 3: Enhanced Loading & Error States (5min)
+1. **Create mountain-themed skeletons**
+   - Ski lift loading animation
+   - Snow falling animation for weather widget
+   - Mountain silhouette for profile loading
 
-2. **Add Suspense boundary**
-   - Wrap UserPreferences in Suspense
-   - Use your custom loading skeleton
+2. **Add Suspense boundaries**
+   - Wrap SkierProfile and WeatherWidget in Suspense
+   - Use custom mountain-themed loading components
 
-## Expected File Structure
+## Expected File Structure 🗂️
 ```
 01-server-components/start/
 ├── app/
 │   ├── components/
-│   │   ├── UserPreferences.tsx     ← New Server Component
-│   │   ├── ErrorBoundary.tsx       ← New Error Boundary
-│   │   └── PreferencesSkeleton.tsx ← New Loading Component
+│   │   ├── SkierProfile.tsx        ← New Server Component
+│   │   ├── WeatherWidget.tsx       ← React 19 use() Hook Demo
+│   │   ├── MountainSkeleton.tsx    ← Themed Loading Component
+│   │   └── SkiErrorBoundary.tsx    ← Mountain-themed Error Boundary
 │   ├── types/
-│   │   └── preferences.ts          ← New Type Definitions
-│   └── page.tsx                    ← Updated Layout
+│   │   ├── skier.ts               ← Skier Profile Types
+│   │   └── weather.ts             ← Weather Data Types
+│   └── page.tsx                    ← Updated with Skiing Theme
 ```
 
-## Success Criteria
-- [ ] UserPreferences loads data from server
-- [ ] Proper loading states with skeleton
-- [ ] Error boundary catches and handles errors
-- [ ] Clean, accessible UI design
-- [ ] TypeScript types are properly defined
+## Success Criteria ✅
+- [ ] SkierProfile loads data from server using async Server Component
+- [ ] WeatherWidget demonstrates React 19 `use()` hook
+- [ ] Mountain-themed loading states with ski animations
+- [ ] Error boundaries with skiing humor ("Oops! Wiped out!")
+- [ ] All TypeScript types properly defined
+- [ ] Proper Suspense boundary usage
 
-## Bonus Challenges
-If you finish early:
-- Add preference persistence (localStorage simulation)
-- Implement theme switching functionality
-- Add animated transitions between states
-- Create custom hook for preferences management
+## Bonus Challenges 🏆
+If you finish early, add these epic features:
+- **Lift Status Component**: Show which lifts are open/closed
+- **Trail Map Integration**: Add a mini trail map widget
+- **Powder Alerts**: Real-time notifications for fresh snow
+- **Buddy System**: Show other skiers on the mountain
+- **Equipment Tracker**: Track ski gear and conditions
 
-## Solution Reference
-When you're done or stuck, check `01-server-components/complete/` to see the full implementation.
+## React 19 Features to Explore 🚀
+- **Server Components**: Async functions that run on the server
+- **use() Hook**: New primitive for handling promises and context
+- **Enhanced Suspense**: Better streaming and error boundaries
+- **Improved Performance**: Automatic optimizations
 
-## Solution Hints
+## Solution Reference 📖
+When you're done or stuck, check `01-server-components/complete/` to see the full implementation with all React 19 features!
+
+## Solution Hints 💡
 <details>
-<summary>Stuck? Click for hints</summary>
+<summary>Need help hitting the slopes? Click for hints!</summary>
 
-**Hint 1**: Server Components run on the server, so you can use async/await directly in the component function.
+**⛷️ Server Component Hint**: Server Components are async functions that run on the server. No more useEffect needed!
 
-**Hint 2**: Error boundaries need to be Client Components (`'use client'`) because they use lifecycle methods.
+**❄️ use() Hook Hint**: The `use()` hook can unwrap promises directly in render. It's like await but for React components!
 
-**Hint 3**: Use the same styling patterns as existing components for consistency.
+**🏔️ Styling Hint**: Use mountain colors (blues, whites, grays) and skiing emojis to make it feel authentic.
 
-**Hint 4**: Remember to handle the loading state in your main page component with Suspense.
+**🎿 Error Handling Hint**: Error boundaries need to be Client Components. Make them skiing-themed with fun messages!
+
+**⚡ Performance Hint**: Server Components reduce JavaScript bundle size - perfect for mountain apps with slow connections!
 
 </details>
 
-## Next Steps
-After completing this lab, we'll integrate these patterns into our main application and add more advanced Server Component features in the React Patterns session!
+## What You'll Learn 🎓
+- Modern React 19 Server Components
+- The revolutionary `use()` hook for promises
+- Advanced Suspense patterns
+- Progressive enhancement techniques
+- Building engaging, themed applications
+
+## Next Steps 🚠
+After mastering these slopes, we'll add advanced patterns, performance optimizations, and real-time features in the next sessions. You're building a production-ready ski tracking app! 🎿⚡

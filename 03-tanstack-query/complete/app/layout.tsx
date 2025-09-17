@@ -1,10 +1,10 @@
 import './globals.css'
-import { QueryProvider } from './providers/QueryProvider'
+import { Providers } from './providers'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'TaskFlow Pro - Modern React Course',
-  description: 'Building modern React applications with Server Components and TanStack Query',
+  title: 'Snowtooth Resort - TanStack Query Demo',
+  description: 'Real-time ski lift status powered by TanStack Query and React 19',
 }
 
 export default function RootLayout({
@@ -14,12 +14,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <QueryProvider>
+      <body className="bg-gray-50 text-gray-900">
+        <Providers>
           <main className="min-h-screen">
             {children}
           </main>
-        </QueryProvider>
+        </Providers>
       </body>
     </html>
   )
