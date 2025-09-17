@@ -16,10 +16,10 @@ The SkiTracker Pro app currently uses Client Components with useEffect/useState 
 
 ## Your Challenge 🏔️
 
-### Part 1: Create Skier Profile Server Component (15min)
+### Part 1: Create Skier Profile Server Component 
 Create a new `SkierProfile` component that loads from the server:
 
-1. **Fetch skier profile from server** (5min)
+1. **Fetch skier profile from server** 
    ```tsx
    // app/components/SkierProfile.tsx
    async function getSkierProfile() {
@@ -38,7 +38,7 @@ Create a new `SkierProfile` component that loads from the server:
    }
    ```
 
-2. **Display profile in sidebar** (5min)
+2. **Display profile in sidebar** 
    - Skier avatar and name
    - Skill level badge (🟢 Beginner, 🔵 Intermediate, ⚫ Advanced, ⚫⚫ Expert)
    - Season stats (total vertical, runs completed)
@@ -49,7 +49,7 @@ Create a new `SkierProfile` component that loads from the server:
    - Add proper mountain-themed styling
 
 ### Part 2: Weather Widget with React 19 use() Hook (10min)
-1. **Create WeatherWidget with use() hook** (5min)
+1. **Create WeatherWidget with use() hook** 
    ```tsx
    // app/components/WeatherWidget.tsx
    'use client'
@@ -70,13 +70,13 @@ Create a new `SkierProfile` component that loads from the server:
    }
    ```
 
-2. **Simulate mountain conditions** (5min)
+2. **Simulate mountain conditions** 
    - Add random weather simulation
    - Show powder alerts when fresh snow > 6"
    - Display avalanche warnings for extreme conditions
    - Add resort status (open/closed lifts)
 
-### Part 3: Enhanced Loading & Error States (5min)
+### Part 3: Enhanced Loading & Error States 
 1. **Create mountain-themed skeletons**
    - Ski lift loading animation
    - Snow falling animation for weather widget

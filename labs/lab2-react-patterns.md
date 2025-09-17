@@ -20,7 +20,7 @@ Your SkiTracker Pro app now has Server Components and the new React 19 `use()` h
 
 Create an intelligent filtering system for your ski runs:
 
-1. **Add difficulty filter** (5min)
+1. **Add difficulty filter** 
    ```tsx
    // app/components/SkiRunFilter.tsx
    'use client'
@@ -65,20 +65,20 @@ Create an intelligent filtering system for your ski runs:
    }
    ```
 
-2. **Add conditions filter** (5min)
+2. **Add conditions filter**
    - Perfect powder days ❄️
    - Groomed corduroy 🎿
    - Spring conditions ☀️
    - Variable conditions 🌤️
 
-3. **Implement smart state management** (5min)
+3. **Implement smart state management**
    - Use `useState` for filter state
    - Use `useMemo` to optimize filtered results
    - Add URL persistence with `useSearchParams`
 
-### Part 2: Statistics Dashboard (10min)
+### Part 2: Statistics Dashboard
 
-1. **Create SkiStats component** (5min)
+1. **Create SkiStats component** 
    ```tsx
    // app/components/SkiStats.tsx
    import { SkiRun } from '../types/task'
@@ -134,14 +134,14 @@ Create an intelligent filtering system for your ski runs:
    }
    ```
 
-2. **Add real-time updates** (5min)
+2. **Add real-time updates** 
    - Stats update automatically when runs change
    - Smooth animations for number changes
    - Progress bars for season goals
 
-### Part 3: Performance Optimization (10min)
+### Part 3: Performance Optimization 
 
-1. **Implement smart memoization** (5min)
+1. **Implement smart memoization** 
    ```tsx
    // Optimize SkiRunItem component
    import { memo } from 'react'
@@ -169,12 +169,12 @@ Create an intelligent filtering system for your ski runs:
    })
    ```
 
-2. **Add virtual scrolling for large lists** (5min)
+2. **Add virtual scrolling for large lists** 
    - Handle 100+ ski runs smoothly
    - Implement `react-window` or custom solution
    - Maintain filter/search performance
 
-### Part 4: Error Boundaries & Resilience (5min)
+### Part 4: Error Boundaries & Resilience 
 
 1. **Create SkiErrorBoundary** (3min)
    ```tsx
@@ -228,7 +228,7 @@ Create an intelligent filtering system for your ski runs:
    }
    ```
 
-2. **Add graceful degradation** (2min)
+2. **Add graceful degradation**
    - Individual run failures don't break the app
    - Loading states for slow connections
    - Offline support indicators
